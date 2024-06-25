@@ -1,0 +1,103 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header#head {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+header#head a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.main-content {
+    margin-top: 20px;
+}
+
+.main-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.main-content section {
+    margin-bottom: 20px;
+}
+
+.task-list {
+    margin-top: 20px;
+}
+
+.task-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.task-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.task-item p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.task-item .btn-group {
+    margin-top: 5px;
+}
+
+.btn-group button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+}
+
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-edit {
+    background-color: #2196F3;
+    color: white;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ddd;
+    font-size: 0.8rem;
+}
