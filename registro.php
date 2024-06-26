@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Insertar el nuevo usuario en la base de datos
             $sql = "INSERT INTO logins (Usuario, Contasena) VALUES ('$usuario', '$contrasena')";
             if ($conn->query($sql) === TRUE) {
-                header("Location: sesion.php");
+                header("Location: index.php");
             } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
             }

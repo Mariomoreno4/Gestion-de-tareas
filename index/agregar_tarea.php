@@ -11,11 +11,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Sanitizar y escapar la nueva tarea (no es necesario con consultas preparadas)
     $nueva_tarea = isset($_POST['nueva_tarea']) ? $_POST['nueva_tarea'] : '';
+    $fecha_tarea = isset($_POST['fecha_tarea']) ? $_POST['fecha_tarea'] : '';
 
     // Verificar que la tarea no esté vacía
-    if (!empty($nueva_tarea)) {
+    if (!empty($nueva_tarea) && !empty($fecha_tarea)) {
         // Insertar la nueva tarea en la base de datos
-        $query = "INSERT INTO tarea (id_usuario, tarea, fecha) VALUES (?, ?, NOW())";
+        $query = "INSERT INTO tarea (id_usuario, tarea, fecha) VALUES (?, ?, ?)";
 
         // Preparar la consulta
         $stmt = mysqli_prepare($conn, $query);
@@ -26,12 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($id_usuario !== null) { // Verificar que el id_usuario no sea null
                 // Vincular los parámetros y ejecutar la consulta
-                mysqli_stmt_bind_param($stmt, "is", $id_usuario, $nueva_tarea);
+                mysqli_stmt_bind_param($stmt, "iss", $id_usuario, $nueva_tarea, $fecha_tarea);
                 mysqli_stmt_execute($stmt);
 
                 // Verificar si se insertó correctamente
                 if (mysqli_stmt_affected_rows($stmt) > 0) {
-                    echo "Tarea agregada correctamente.";
+                    echo "success";
                 } else {
                     echo "Error al agregar la tarea: " . mysqli_stmt_error($stmt);
                 }
@@ -45,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error en la preparación de la consulta: " . mysqli_error($conn);
         }
     } else {
-        echo "Por favor, completa el campo de nueva tarea.";
+        echo "Por favor, completa todos los campos del formulario.";
     }
 
     // Cerrar la conexión (opcional, dependiendo de la lógica de tu aplicación)

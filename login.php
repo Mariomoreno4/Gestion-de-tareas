@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['usuario'] = $usuario; // Opcional, guardar también el nombre de usuario
 
         // Redireccionar a la página de tareas
-        header("Location: tarea.php");
+        header("Location: index/tarea.php");
         exit();
     } else {
         // Usuario o contraseña inválidos

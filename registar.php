@@ -35,7 +35,7 @@
             <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" required><br>
             <button type="submit">Registrar</button>
             <label>¿Ya tienes cuenta?</label><br>
-            <a href="sesion.php">Login</a>
+            <a href="index.php">Login</a>
         </form>
     </div>
 </body>
