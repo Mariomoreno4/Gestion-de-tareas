@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script>
         function validarFormulario() {
             var contrasena1 = document.getElementById("contrasena").value;
@@ -23,20 +24,48 @@
         }
     </script>
 </head>
+<style>
+        body {
+            background-color: #42C7E8; /* Corregido el color hexadecimal */
+        }
+      
+    </style>
 <body>
-    <div>
-        <form action="registro.php" method="POST" onsubmit="return validarFormulario()">
-            <h1>Registro</h1><br>
-            <label for="usuario">Usuario</label><br>
-            <input type="text" name="usuario" id="usuario" required><br>
-            <label for="contrasena">Contraseña</label><br>
-            <input type="password" name="contrasena" id="contrasena" required><br>
-            <label for="confirmar_contrasena">Confirma tu Contraseña</label><br>
-            <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" required><br>
-            <button type="submit">Registrar</button>
-            <label>¿Ya tienes cuenta?</label><br>
-            <a href="index.php">Login</a>
-        </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h1>Registro</h1>
+                    </div>
+                    <div class="card-body">
+                        <form action="registro.php" method="POST" onsubmit="return validarFormulario()">
+                            <div class="mb-3">
+                                <label for="usuario" class="form-label">Usuario</label>
+                                <input type="text" class="form-control" name="usuario" id="usuario" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contrasena" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="contrasena" id="contrasena" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmar_contrasena" class="form-label">Confirma tu Contraseña</label>
+                                <input type="password" class="form-control" name="confirmar_contrasena" id="confirmar_contrasena" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Registrar</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <small>¿Ya tienes cuenta?</small><br>
+                        <a href="index.php" class="btn btn-link">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+fqswPeP5M5vyDoM26kM4jB85d4Ji" crossorigin="anonymous"></script>
 </body>
 </html>

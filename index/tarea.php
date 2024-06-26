@@ -15,24 +15,29 @@ if (!$conn) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de tus tareas</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Añadir jQuery para AJAX -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> <!-- jQuery UI para pestañas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
-<header id="head">
-    <div class="container">
-        Gestión de tus tareas
-    </div>
-</header>
 
 <body>
-    <div class="container main-content">
-        <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h1>
-        <a href="/Proyecto/logout.php">Cerrar sesión</a>
+    <header class="bg-primary text-white text-center py-3 mb-4">
+        <div class="container">
+            <h1>Gestión de tus tareas</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="text-center">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h2>
+        <div class="text-end">
+            <a href="/Proyecto/logout.php" class="btn btn-danger">Cerrar sesión</a>
+        </div>
 
         <?php
         // Mostrar el id_usuario del usuario actual
@@ -52,17 +57,21 @@ if (!$conn) {
         }
         ?>
 
-        <section>
-            <h2>¿Cuál es tu próxima tarea?</h2>
-            <form method="post" action="agregar_tarea.php"> <!-- Ajusta según tu archivo de manejo de agregar tarea -->
-                <textarea name="nueva_tarea" placeholder="Escribe aquí tu nueva tarea"></textarea>
-                <input type="date" name="fecha_tarea" id="start" value="2023-01-01" min="2023-01-01" max="2023-12-31" />
-                <button type="submit" class="btn-edit">Agregar tarea</button>
+        <section class="mt-4">
+            <h3>¿Cuál es tu próxima tarea?</h3>
+            <form method="post" action="agregar_tarea.php">
+                <div class="mb-3">
+                    <textarea class="form-control" name="nueva_tarea" placeholder="Escribe aquí tu nueva tarea" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" name="fecha_tarea" id="start" value="2023-01-01" min="2024-01-01" max="2025-12-31" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Agregar tarea</button>
             </form>
         </section>
 
-        <section class="task-list">
-            <h2>Tus tareas</h2>
+        <section class="task-list mt-4">
+            <h3>Tus tareas</h3>
             <div id="tabs">
                 <ul>
                     <?php
@@ -100,14 +109,16 @@ if (!$conn) {
                         foreach ($tareas_por_mes as $mes => $tareas) {
                             echo '<div id="tabs-' . htmlspecialchars($mes, ENT_QUOTES, 'UTF-8') . '">';
                             foreach ($tareas as $tarea) {
-                                echo '<article class="task-item" data-id="' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '">';
-                                echo '<h3>' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h3>';
-                                echo '<p>Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
-                                echo '<div class="btn-group">';
-                                echo '<button class="btn-edit" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
-                                echo '<button class="btn-delete" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
+                                echo '<div class="card mb-3">';
+                                echo '<div class="card-body">';
+                                echo '<h5 class="card-title">' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h5>';
+                                echo '<p class="card-text">Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
+                                echo '<div class="btn-group" role="group">';
+                                echo '<button class="btn btn-secondary" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
+                                echo '<button class="btn btn-danger" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
                                 echo '</div>';
-                                echo '</article>';
+                                echo '</div>';
+                                echo '</div>';
                             }
                             echo '</div>';
                         }
@@ -122,7 +133,7 @@ if (!$conn) {
         </section>
     </div>
 
-    <footer>
+    <footer class="bg-primary text-white text-center py-3 mt-4">
         <div class="container">
             &copy; <?php echo date('Y'); ?> | EXPLOSIVO
         </div>
@@ -142,9 +153,9 @@ if (!$conn) {
                     data: {id_tarea: id, nueva_tarea: nuevaTarea},
                     success: function(response) {
                         if (response === 'success') {
-                            location.reload(); // Recargar la página para ver los cambios
+                            location.reload();
                         } else {
-                            location.reload(); // Recargar la página para ver los cambios
+                            alert("Error al editar la tarea.");
                         }
                     }
                 });
@@ -159,9 +170,9 @@ if (!$conn) {
                     data: {id_tarea: id},
                     success: function(response) {
                         if (response === 'success') {
-                            $('article[data-id="' + id + '"]').remove(); // Eliminar el elemento de la página sin recargar
+                            location.reload();
                         } else {
-                            $('article[data-id="' + id + '"]').remove(); // Eliminar el elemento de la página sin recargar
+                            alert("Error al eliminar la tarea.");
                         }
                     }
                 });

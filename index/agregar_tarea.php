@@ -32,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Verificar si se insertó correctamente
                 if (mysqli_stmt_affected_rows($stmt) > 0) {
-                    echo "success";
+                    // Redirigir a tarea.php
+                    header("Location: tarea.php");
+                    exit();
                 } else {
                     echo "Error al agregar la tarea: " . mysqli_stmt_error($stmt);
                 }
