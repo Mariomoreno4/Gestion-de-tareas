@@ -9,14 +9,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener la conexión desde el archivo de conexión
     global $conn; // Asegurarse de que $conn está disponible globalmente
 
-    // Sanitizar y escapar la nueva tarea (no es necesario con consultas preparadas)
+    // Obtener y sanitizar los datos del formulario
     $nueva_tarea = isset($_POST['nueva_tarea']) ? $_POST['nueva_tarea'] : '';
     $fecha_tarea = isset($_POST['fecha_tarea']) ? $_POST['fecha_tarea'] : '';
+    $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
+    $importancia = isset($_POST['importancia']) ? $_POST['importancia'] : '';
 
-    // Verificar que la tarea no esté vacía
-    if (!empty($nueva_tarea) && !empty($fecha_tarea)) {
+    // Verificar que los campos no estén vacíos
+    if (!empty($nueva_tarea) && !empty($fecha_tarea) && !empty($categoria) && !empty($importancia)) {
         // Insertar la nueva tarea en la base de datos
-        $query = "INSERT INTO tarea (id_usuario, tarea, fecha) VALUES (?, ?, ?)";
+        $query = "INSERT INTO tarea (id_usuario, tarea, fecha, categoria, importancia) VALUES (?, ?, ?, ?, ?)";
 
         // Preparar la consulta
         $stmt = mysqli_prepare($conn, $query);
@@ -27,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($id_usuario !== null) { // Verificar que el id_usuario no sea null
                 // Vincular los parámetros y ejecutar la consulta
-                mysqli_stmt_bind_param($stmt, "iss", $id_usuario, $nueva_tarea, $fecha_tarea);
+                mysqli_stmt_bind_param($stmt, "issss", $id_usuario, $nueva_tarea, $fecha_tarea, $categoria, $importancia);
                 mysqli_stmt_execute($stmt);
 
                 // Verificar si se insertó correctamente

@@ -1,5 +1,6 @@
+
 <?php
-require_once 'conexion.php'; // Incluye el archivo de conexión
+require_once 'conexion.php'; 
 
 session_start(); // Iniciar la sesión
 
@@ -8,7 +9,7 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-// Asegurarse de que la conexión a la base de datos sea exitosa
+
 if (!$conn) {
     die("Error de conexión: " . mysqli_connect_error());
 }
@@ -32,7 +33,12 @@ if (!$conn) {
             <h1>Gestión de tus tareas</h1>
         </div>
     </header>
-
+    <style>
+    .tarea-completada {
+        background-color: #333; /* Color oscuro de fondo */
+        color: #fff; /* Texto claro */
+    }
+</style>
     <div class="container">
         <h2 class="text-center">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h2>
         <div class="text-end">
@@ -64,7 +70,23 @@ if (!$conn) {
                     <textarea class="form-control" name="nueva_tarea" placeholder="Escribe aquí tu nueva tarea" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <input type="date" class="form-control" name="fecha_tarea" id="start" value="2023-01-01" min="2024-01-01" max="2025-12-31" required>
+                    <input type="date" class="form-control" name="fecha_tarea" required>
+                </div>
+                <div class="mb-3">
+                    <select class="form-control" name="categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="Trabajo">Trabajo</option>
+                        <option value="Personal">Personal</option>
+                        <!-- Añade más opciones de categorías aquí -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <select class="form-control" name="importancia" required>
+                        <option value="">Selecciona una importancia</option>
+                        <option value="1">Baja</option>
+                        <option value="2">Media</option>
+                        <option value="3">Alta</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Agregar tarea</button>
             </form>
@@ -77,7 +99,7 @@ if (!$conn) {
                     <?php
                     // Obtener las tareas del usuario actual y agruparlas por mes
                     if (isset($id_usuario)) {
-                        $query_tareas = "SELECT id_tarea, tarea, DATE_FORMAT(fecha, '%Y-%m') as mes, fecha FROM tarea WHERE id_usuario = ? ORDER BY fecha DESC";
+                        $query_tareas = "SELECT id_tarea, tarea, DATE_FORMAT(fecha, '%Y-%m') as mes, fecha, categoria, importancia FROM tarea WHERE id_usuario = ? ORDER BY fecha DESC";
                         $stmt_tareas = mysqli_prepare($conn, $query_tareas);
                         mysqli_stmt_bind_param($stmt_tareas, "i", $id_usuario);
                         mysqli_stmt_execute($stmt_tareas);
@@ -109,16 +131,59 @@ if (!$conn) {
                         foreach ($tareas_por_mes as $mes => $tareas) {
                             echo '<div id="tabs-' . htmlspecialchars($mes, ENT_QUOTES, 'UTF-8') . '">';
                             foreach ($tareas as $tarea) {
-                                echo '<div class="card mb-3">';
+                                echo '<div class="card mb-3';
+                                if (isset($tarea['completada']) && $tarea['completada']) {
+                                    echo ' tarea-completada";'; // Agrega una clase si la tarea está completada
+                                } else {
+                                    echo '";';
+                                }
+                                echo '>';
                                 echo '<div class="card-body">';
                                 echo '<h5 class="card-title">' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h5>';
                                 echo '<p class="card-text">Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
-                                echo '<div class="btn-group" role="group">';
-                                echo '<button class="btn btn-secondary" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
-                                echo '<button class="btn btn-danger" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
-                                echo '</div>';
-                                echo '</div>';
-                                echo '</div>';
+                            
+
+                                // Mostrar la categoría
+                                if (isset($tarea['categoria']) && !empty($tarea['categoria'])) {
+                                    echo '<p class="card-text">Categoría: ' . htmlspecialchars($tarea['categoria'], ENT_QUOTES, 'UTF-8') . '</p>';
+                                } else {
+                                    echo '<p class="card-text">Categoría: Sin categoría</p>';
+                                }
+
+                                // Mostrar la importancia
+                                if (isset($tarea['importancia']) && !empty($tarea['importancia'])) {
+                                    $importancia_texto = '';
+                                    switch ($tarea['importancia']) {
+                                        case '1':
+                                            $importancia_texto = 'Baja';
+                                            break;
+                                        case '2':
+                                            $importancia_texto = 'Media';
+                                            break;
+                                        case '3':
+                                            $importancia_texto = 'Alta';
+                                            break;
+                                        default:
+                                            $importancia_texto = 'No especificada';
+                                            break;
+                                    }
+                                    echo '<p class="card-text">Importancia: ' . htmlspecialchars($importancia_texto, ENT_QUOTES, 'UTF-8') . '</p>';
+                                } else {
+                                    echo '<p class="card-text">Importancia: No especificada</p>';
+                                }
+
+   // Checkbox de completada
+echo '<div class="form-check">';
+echo '<input class="form-check-input" type="checkbox" id="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '" ' . (isset($tarea['completada']) && $tarea['completada'] ? 'checked' : '') . ' onclick="marcarCompletada(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">';
+echo '<label class="form-check-label" for="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '">Completada</label>';
+echo '</div>';
+    // Botones de editar y eliminar
+    echo '<div class="btn-group" role="group">';
+    echo '<button class="btn btn-secondary" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
+    echo '<button class="btn btn-danger" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
                             }
                             echo '</div>';
                         }
@@ -178,6 +243,28 @@ if (!$conn) {
                 });
             }
         }
+
+        function marcarCompletada(id) {
+    $.ajax({
+        url: 'marcar_completada.php',
+        type: 'POST',
+        data: {id_tarea: id},
+        success: function(response) {
+            if (response === 'success') {
+                // Actualizar visualmente el estado de completada
+                var checkbox = $('#completada-' + id);
+                checkbox.prop('checked', !checkbox.prop('checked')); // Invertir estado actual del checkbox
+
+                // Opcional: Actualizar estilo u otros elementos de la tarea completada
+                checkbox.closest('.card').toggleClass('tarea-completada');
+            } else {
+                alert("Error al marcar la tarea como completada.");
+            }
+        }
+    });
+}
+
+
     </script>
 </body>
 </html>
