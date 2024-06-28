@@ -35,7 +35,7 @@ if (!$conn) {
     </header>
     <style>
     .tarea-completada {
-        background-color: #333; /* Color oscuro de fondo */
+        background-color: green; /* Color oscuro de fondo */
         color: #fff; /* Texto claro */
     }
 </style>
@@ -43,6 +43,8 @@ if (!$conn) {
         <h2 class="text-center">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h2>
         <div class="text-end">
             <a href="/Proyecto/logout.php" class="btn btn-danger">Cerrar sesión</a>
+            <a href="/Proyecto/index/History/historial.php" class="btn btn-primary">Historial</a>
+
         </div>
 
         <?php
@@ -99,7 +101,7 @@ if (!$conn) {
                     <?php
                     // Obtener las tareas del usuario actual y agruparlas por mes
                     if (isset($id_usuario)) {
-                        $query_tareas = "SELECT id_tarea, tarea, DATE_FORMAT(fecha, '%Y-%m') as mes, fecha, categoria, importancia FROM tarea WHERE id_usuario = ? ORDER BY fecha DESC";
+                        $query_tareas = "SELECT id_tarea, tarea, DATE_FORMAT(fecha, '%Y-%m') as mes, fecha, categoria, importancia, completada FROM tarea WHERE id_usuario = ? AND completada = 0 ORDER BY fecha DESC";
                         $stmt_tareas = mysqli_prepare($conn, $query_tareas);
                         mysqli_stmt_bind_param($stmt_tareas, "i", $id_usuario);
                         mysqli_stmt_execute($stmt_tareas);
