@@ -68,41 +68,56 @@ if (isset($_SESSION['usuario'])) {
         <section class="task-list mt-4">
             <h3>Tus tareas completadas</h3>
             <div id="tareas-completadas">
-                <?php
-                // Obtener las tareas completadas del usuario actual
-                if (isset($id_usuario)) {
-                    $query_tareas_completadas = "SELECT id_tarea, tarea, fecha, categoria, importancia FROM tarea WHERE id_usuario = ? AND completada = 1 ORDER BY fecha DESC";
-                    $stmt_tareas_completadas = mysqli_prepare($conn, $query_tareas_completadas);
-                    mysqli_stmt_bind_param($stmt_tareas_completadas, "i", $id_usuario);
-                    mysqli_stmt_execute($stmt_tareas_completadas);
-                    $resultado_tareas_completadas = mysqli_stmt_get_result($stmt_tareas_completadas);
+    <?php
+    // Obtener las tareas completadas del usuario actual
+    if (isset($id_usuario)) {
+        $query_tareas_completadas = "SELECT id_tarea, tarea, fecha, categoria, importancia FROM tarea WHERE id_usuario = ? AND completada = 1 ORDER BY fecha DESC";
+        $stmt_tareas_completadas = mysqli_prepare($conn, $query_tareas_completadas);
+        mysqli_stmt_bind_param($stmt_tareas_completadas, "i", $id_usuario);
+        mysqli_stmt_execute($stmt_tareas_completadas);
+        $resultado_tareas_completadas = mysqli_stmt_get_result($stmt_tareas_completadas);
 
-                    if ($resultado_tareas_completadas) {
-                        while ($tarea = mysqli_fetch_assoc($resultado_tareas_completadas)) {
-                            echo '<div class="card mb-3 tarea-completada">';
-                            echo '<div class="card-body">';
-                            echo '<h5 class="card-title">' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h5>';
-                            echo '<p class="card-text">Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
-                            echo '<p class="card-text">Categoría: ' . htmlspecialchars($tarea['categoria'], ENT_QUOTES, 'UTF-8') . '</p>';
-                            echo '<p class="card-text">Importancia: ' . htmlspecialchars($tarea['importancia'], ENT_QUOTES, 'UTF-8') . '</p>';
-                            echo '<button class="btn btn-warning" onclick="desmarcarTarea(' . $tarea['id_tarea'] . ')">Desmarcar</button> ';
-                            echo '<button class="btn btn-danger" onclick="eliminarTarea(' . $tarea['id_tarea'] . ')">Eliminar</button>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                        mysqli_free_result($resultado_tareas_completadas);
-                    } else {
-                        echo "Error en la consulta de tareas completadas: " . htmlspecialchars(mysqli_error($conn), ENT_QUOTES, 'UTF-8');
-                    }
+        if ($resultado_tareas_completadas) {
+            $count = 0; // Inicializamos el contador para controlar las columnas
 
-                    mysqli_stmt_close($stmt_tareas_completadas);
-                } else {
-                    echo "Error: No se pudo obtener el ID de usuario.";
+            while ($tarea = mysqli_fetch_assoc($resultado_tareas_completadas)) {
+                if ($count % 2 == 0) { // Abre una nueva fila de Bootstrap cada dos tarjetas
+                    echo '<div class="row">';
                 }
 
-                mysqli_close($conn);
-                ?>
-            </div>
+                echo '<div class="col-md-6">';
+                echo '<div class="card mb-3 tarea-completada">';
+                echo '<div class="card-body">';
+                echo '<h5 class="card-title">' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h5>';
+                echo '<p class="card-text">Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
+                echo '<p class="card-text">Categoría: ' . htmlspecialchars($tarea['categoria'], ENT_QUOTES, 'UTF-8') . '</p>';
+                echo '<p class="card-text">Importancia: ' . htmlspecialchars($tarea['importancia'], ENT_QUOTES, 'UTF-8') . '</p>';
+                echo '<button class="btn btn-warning" onclick="desmarcarTarea(' . $tarea['id_tarea'] . ')">Desmarcar</button> ';
+                echo '<button class="btn btn-danger" onclick="eliminarTarea(' . $tarea['id_tarea'] . ')">Eliminar</button>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+
+                if ($count % 2 != 0 || $count == mysqli_num_rows($resultado_tareas_completadas) - 1) { // Cierra la fila si es el último elemento o se han mostrado dos tarjetas
+                    echo '</div>'; // Cierra la fila de Bootstrap
+                }
+
+                $count++;
+            }
+
+            mysqli_free_result($resultado_tareas_completadas);
+        } else {
+            echo "Error en la consulta de tareas completadas: " . htmlspecialchars(mysqli_error($conn), ENT_QUOTES, 'UTF-8');
+        }
+
+        mysqli_stmt_close($stmt_tareas_completadas);
+    } else {
+        echo "Error: No se pudo obtener el ID de usuario.";
+    }
+
+    mysqli_close($conn);
+    ?>
+</div>
         </section>
     </div>
 

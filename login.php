@@ -17,15 +17,15 @@ if ($conn->connect_error) {
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener los datos del formulario y evitar inyección SQL
-    $usuario = isset($_POST['usuario']) ? $_POST['usuario'] : '';
+    $usuario = isset($_POST['usuario']) ? $conn->real_escape_string($_POST['usuario']) : '';
     $contrasena = isset($_POST['contrasena']) ? $_POST['contrasena'] : '';
 
-    // Consulta preparada para verificar las credenciales
-    $sql = "SELECT id_usuario FROM logins WHERE Usuario = ? AND Contasena = ?";
+    // Consulta preparada para verificar el usuario
+    $sql = "SELECT id_usuario, Contasena FROM logins WHERE Usuario = ?";
     
     // Preparar la consulta
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $usuario, $contrasena);
+    $stmt->bind_param("s", $usuario);
 
     // Ejecutar la consulta
     $stmt->execute();
@@ -33,19 +33,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Verificar si se encontró el usuario
     if ($stmt->num_rows > 0) {
-        // Obtener el ID de usuario
-        $stmt->bind_result($id_usuario);
+        // Obtener el ID de usuario y la contraseña encriptada
+        $stmt->bind_result($id_usuario, $hashed_password);
         $stmt->fetch();
 
-        // Guardar el ID de usuario en la sesión
-        $_SESSION['id'] = $id_usuario;
-        $_SESSION['usuario'] = $usuario; // Opcional, guardar también el nombre de usuario
+        // Verificar la contraseña
+        if (password_verify($contrasena, $hashed_password)) {
+            // Guardar el ID de usuario en la sesión
+            $_SESSION['id'] = $id_usuario;
+            $_SESSION['usuario'] = $usuario; // Opcional, guardar también el nombre de usuario
 
-        // Redireccionar a la página de tareas
-        header("Location: index/tarea.php");
-        exit();
+            // Redireccionar a la página de tareas
+            header("Location: index/tarea.php");
+            exit();
+        } else {
+            // Contraseña incorrecta
+            echo "Usuario o contraseña incorrectos.";
+        }
     } else {
-        // Usuario o contraseña inválidos
+        // Usuario no encontrado
         echo "Usuario o contraseña incorrectos.";
     }
 
