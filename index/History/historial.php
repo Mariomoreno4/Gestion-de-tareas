@@ -52,8 +52,8 @@ if (isset($_SESSION['usuario'])) {
     <div class="container">
         <h2 class="text-center">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h2>
         <div class="text-end">
-            <a href="/Proyecto/logout.php" class="btn btn-danger">Cerrar sesión</a>
-            <a href="/Proyecto/index/tarea.php" class="btn btn-primary">Volver</a>
+            <a href="../../logout.php" class="btn btn-danger">Cerrar sesión</a>
+            <a href="../tarea.php" class="btn btn-primary">Volver</a>
         </div>
 
         <?php

@@ -1,4 +1,3 @@
-
 <?php
 require_once 'conexion.php'; 
 
@@ -9,12 +8,10 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-
 if (!$conn) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +23,6 @@ if (!$conn) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
-
 <body>
     <header class="bg-primary text-white text-center py-3 mb-4">
         <div class="container">
@@ -42,9 +38,8 @@ if (!$conn) {
     <div class="container">
         <h2 class="text-center">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>!</h2>
         <div class="text-end">
-            <a href="/Proyecto/logout.php" class="btn btn-danger">Cerrar sesión</a>
-            <a href="/Proyecto/index/History/historial.php" class="btn btn-primary">Historial</a>
-
+            <a href="../logout.php" class="btn btn-danger">Cerrar sesión</a>
+            <a href="History/historial.php" class="btn btn-primary">Historial</a>
         </div>
 
         <?php
@@ -144,7 +139,6 @@ if (!$conn) {
                                 echo '<h5 class="card-title">' . htmlspecialchars($tarea['tarea'], ENT_QUOTES, 'UTF-8') . '</h5>';
                                 echo '<p class="card-text">Fecha: ' . htmlspecialchars($tarea['fecha'], ENT_QUOTES, 'UTF-8') . '</p>';
                             
-
                                 // Mostrar la categoría
                                 if (isset($tarea['categoria']) && !empty($tarea['categoria'])) {
                                     echo '<p class="card-text">Categoría: ' . htmlspecialchars($tarea['categoria'], ENT_QUOTES, 'UTF-8') . '</p>';
@@ -174,18 +168,18 @@ if (!$conn) {
                                     echo '<p class="card-text">Importancia: No especificada</p>';
                                 }
 
-   // Checkbox de completada
-echo '<div class="form-check">';
-echo '<input class="form-check-input" type="checkbox" id="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '" ' . (isset($tarea['completada']) && $tarea['completada'] ? 'checked' : '') . ' onclick="marcarCompletada(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">';
-echo '<label class="form-check-label" for="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '">Completada</label>';
-echo '</div>';
-    // Botones de editar y eliminar
-    echo '<div class="btn-group" role="group">';
-    echo '<button class="btn btn-secondary" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
-    echo '<button class="btn btn-danger" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
+                                // Checkbox de completada
+                                echo '<div class="form-check">';
+                                echo '<input class="form-check-input" type="checkbox" id="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '" ' . (isset($tarea['completada']) && $tarea['completada'] ? 'checked' : '') . ' onclick="marcarCompletada(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">';
+                                echo '<label class="form-check-label" for="completada-' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . '">Completada</label>';
+                                echo '</div>';
+                                // Botones de editar y eliminar
+                                echo '<div class="btn-group" role="group">';
+                                echo '<button class="btn btn-secondary" onclick="editarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Editar</button>';
+                                echo '<button class="btn btn-danger" onclick="eliminarTarea(' . htmlspecialchars($tarea['id_tarea'], ENT_QUOTES, 'UTF-8') . ')">Eliminar</button>';
+                                echo '</div>';
+                                echo '</div>';
+                                echo '</div>';
                             }
                             echo '</div>';
                         }
@@ -247,26 +241,24 @@ echo '</div>';
         }
 
         function marcarCompletada(id) {
-    $.ajax({
-        url: 'marcar_completada.php',
-        type: 'POST',
-        data: {id_tarea: id},
-        success: function(response) {
-            if (response === 'success') {
-                // Actualizar visualmente el estado de completada
-                var checkbox = $('#completada-' + id);
-                checkbox.prop('checked', !checkbox.prop('checked')); // Invertir estado actual del checkbox
+            $.ajax({
+                url: 'marcar_completada.php',
+                type: 'POST',
+                data: {id_tarea: id},
+                success: function(response) {
+                    if (response === 'success') {
+                        // Actualizar visualmente el estado de completada
+                        var checkbox = $('#completada-' + id);
+                        checkbox.prop('checked', !checkbox.prop('checked')); // Invertir estado actual del checkbox
 
-                // Opcional: Actualizar estilo u otros elementos de la tarea completada
-                checkbox.closest('.card').toggleClass('tarea-completada');
-            } else {
-                alert("Error al marcar la tarea como completada.");
-            }
+                        // Opcional: Actualizar estilo u otros elementos de la tarea completada
+                        checkbox.closest('.card').toggleClass('tarea-completada');
+                    } else {
+                        alert("Error al marcar la tarea como completada.");
+                    }
+                }
+            });
         }
-    });
-}
-
-
     </script>
 </body>
 </html>
