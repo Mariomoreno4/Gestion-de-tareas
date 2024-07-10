@@ -1,12 +1,22 @@
 <?php
 require_once 'conexion.php'; 
-
-session_start(); // Iniciar la sesión
+session_start();
 
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit;
 }
+
+$usuario = $_SESSION['usuario'];
+$query = "SELECT tipo FROM logins WHERE usuario = ?";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "s", $usuario);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $tipo);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
+
+$_SESSION['tipo'] = $tipo;
 
 if (!$conn) {
     die("Error de conexión: " . mysqli_connect_error());
@@ -45,6 +55,10 @@ if (!$conn) {
         <div class="text-end">
             <a href="/Proyecto/logout.php" class="btn btn-danger">Cerrar sesión</a>
             <a href="/Proyecto/index/History/historial.php" class="btn btn-primary">Historial</a>
+            <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] == 1): ?>
+                <a href="/Proyecto/index/usuarios.php" class="btn btn-primary">Usuarios</a>
+            <?php endif; ?>
+    
         </div>
 
         <?php

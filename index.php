@@ -36,7 +36,7 @@
                     </div>
                     <div class="card-footer text-center">
                         <small>No tienes cuenta?</small><br>
-                        <a href="registro.html" class="btn btn-link">Regístrate</a>
+                        <a href="registar.php" class="btn btn-link">Regístrate</a>
                     </div>
                 </div>
             </div>
