@@ -15,21 +15,30 @@
                 return false;
             }
 
-            if (contrasena1.length < 1 || contrasena1.length > 20) {
-                alert("La contraseña debe tener entre 1 y 20 caracteres.");
+            if (contrasena1.length < 8) {
+                alert("La contraseña debe tener al menos 8 caracteres.");
+                return false;
+            }
+
+            var mayuscula = /[A-Z]/.test(contrasena1);
+            var minuscula = /[a-z]/.test(contrasena1);
+            var numero = /[0-9]/.test(contrasena1);
+            var caracter_especial = /[^\w]/.test(contrasena1);
+
+            if (!mayuscula || !minuscula || !numero || !caracter_especial) {
+                alert("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.");
                 return false;
             }
 
             return true;
         }
     </script>
-</head>
-<style>
+    <style>
         body {
             background-color: #42C7E8; /* Corregido el color hexadecimal */
         }
-      
     </style>
+</head>
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -51,6 +60,13 @@
                             <div class="mb-3">
                                 <label for="confirmar_contrasena" class="form-label">Confirma tu Contraseña</label>
                                 <input type="password" class="form-control" name="confirmar_contrasena" id="confirmar_contrasena" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo de Usuario</label>
+                                <select class="form-control" name="tipouser" id="tipo" required>
+                                    <option value="0">Admin</option>
+                                    <option value="1">User</option>
+                                </select>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Registrar</button>

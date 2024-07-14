@@ -17,26 +17,28 @@ if ($conn->connect_error) {
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener los datos del formulario y evitar inyección SQL
-    $usuario = isset($_POST['usuario']) ? $_POST['usuario'] : '';
+    $usuario = isset($_POST['usuario']) ? $conn->real_escape_string($_POST['usuario']) : '';
     $contrasena = isset($_POST['contrasena']) ? $_POST['contrasena'] : '';
 
-    // Consulta preparada para verificar las credenciales
-    $sql = "SELECT id_usuario FROM logins WHERE Usuario = ? AND Contasena = ?";
+    // Consulta preparada para verificar el usuario
+    $sql = "SELECT id_usuario, Contasena FROM logins WHERE Usuario = ?";
     
     // Preparar la consulta
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ss", $usuario, $contrasena);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $usuario);
 
         // Ejecutar la consulta
         $stmt->execute();
         $stmt->store_result();
 
-        // Verificar si se encontró el usuario
-        if ($stmt->num_rows > 0) {
-            // Obtener el ID de usuario
-            $stmt->bind_result($id_usuario);
-            $stmt->fetch();
+    // Verificar si se encontró el usuario
+    if ($stmt->num_rows > 0) {
+        // Obtener el ID de usuario y la contraseña encriptada
+        $stmt->bind_result($id_usuario, $hashed_password);
+        $stmt->fetch();
 
+        // Verificar la contraseña
+        if (password_verify($contrasena, $hashed_password)) {
             // Guardar el ID de usuario en la sesión
             $_SESSION['id'] = $id_usuario;
             $_SESSION['usuario'] = $usuario; // Opcional, guardar también el nombre de usuario
@@ -45,15 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: index/tarea.php");
             exit();
         } else {
-            // Usuario o contraseña inválidos
+            // Contraseña incorrecta
             echo "Usuario o contraseña incorrectos.";
         }
-
-        // Cerrar la consulta preparada
-        $stmt->close();
     } else {
-        // Error en la preparación de la consulta
-        echo "Error en la preparación de la consulta: " . $conn->error;
+        // Usuario no encontrado
+        echo "Usuario o contraseña incorrectos.";
     }
 }
 
