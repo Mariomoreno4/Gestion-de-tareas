@@ -1,9 +1,9 @@
 <?php
 session_start(); // Iniciar la sesión
 
-$servername = "localhost";
-$username = "root";
-$password = "";
+$servername = "localhost"; // Usar el nombre del servicio de Docker
+$username = "root"; // Nombre de usuario configurado en el docker-compose
+$password = ""; // Contraseña configurada en el docker-compose
 $dbname = "mysql"; // Nombre de la base de datos
 
 // Crear conexión
@@ -27,9 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $usuario);
 
-    // Ejecutar la consulta
-    $stmt->execute();
-    $stmt->store_result();
+        // Ejecutar la consulta
+        $stmt->execute();
+        $stmt->store_result();
 
     // Verificar si se encontró el usuario
     if ($stmt->num_rows > 0) {
@@ -54,9 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Usuario no encontrado
         echo "Usuario o contraseña incorrectos.";
     }
-
-    // Cerrar la consulta preparada
-    $stmt->close();
 }
 
 // Cerrar conexión
