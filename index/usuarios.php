@@ -128,6 +128,7 @@ mysqli_close($conn);
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-warning" onclick="editarUsuario('<?php echo $usuario['id_usuario']; ?>', '<?php echo $usuario['usuario']; ?>', '<?php echo $usuario['tipo']; ?>')"><i class="fas fa-edit"></i> Editar</button>
                                         <button class="btn btn-danger" onclick="eliminarUsuario('<?php echo $usuario['id_usuario']; ?>')"><i class="fas fa-trash"></i> Eliminar</button>
+                                        <a href="tareas_usuario.php?id_usuario=<?php echo $usuario['id_usuario']; ?>" class="btn btn-info"><i class="fas fa-tasks"></i> Tareas</a>
                                     </div>
                                 </td>
                             </tr>
