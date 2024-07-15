@@ -35,7 +35,7 @@
     </script>
     <style>
         body {
-            background-color: #42C7E8; /* Corregido el color hexadecimal */
+            background-color: #42C7E8;
         }
     </style>
 </head>
@@ -62,12 +62,12 @@
                                 <input type="password" class="form-control" name="confirmar_contrasena" id="confirmar_contrasena" required>
                             </div>
                             <div class="mb-3">
-                                <label for="tipo" class="form-label">Tipo de Usuario</label>
-                                <select class="form-control" name="tipouser" id="tipo" required>
-                                    <option value="0">Admin</option>
-                                    <option value="1">User</option>
-                                </select>
-                            </div>
+    <label for="tipo" class="form-label">Tipo de Usuario</label>
+    <select class="form-control" name="tipouser" id="tipo" required>
+        <option value="1">Admin</option>
+        <option value="2">User</option>
+    </select>
+</div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Registrar</button>
                             </div>
